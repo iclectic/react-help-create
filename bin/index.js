@@ -18,6 +18,7 @@ const {
   deleteConfig,
 } = require("./delete");
 const { combineComponents, combinePages } = require("./combine");
+const { replaceComponent } = require("./replace");
 const { rootChecker, languageChecker, loadConfig } = require("./utils");
 
 yargs
@@ -215,7 +216,7 @@ yargs
           alias: "folder",
           type: "string",
           describe: "name or path of folder that combines components or pages",
-          demandOption: "this option is mandatory" | true,
+          demandOption: true,
         });
     },
     (argv) => {
@@ -231,6 +232,29 @@ yargs
         } else {
           console.log("Check usage: rhc combine --help");
         }
+      } else {
+        console.log("You don't seem to be at the root of a react project");
+      }
+    }
+  )
+  .command(
+    "replace <oldComponent> <newComponent>",
+    "replace an existing component with a new one",
+    (yargs) => {
+      yargs
+        .positional("oldComponent", {
+          describe: "The name of the component to replace",
+          type: "string",
+        })
+        .positional("newComponent", {
+          describe: "The name of the new component",
+          type: "string",
+        });
+    },
+    (argv) => {
+      if (rootChecker()) {
+        const { oldComponent, newComponent } = argv;
+        replaceComponent(oldComponent, newComponent);
       } else {
         console.log("You don't seem to be at the root of a react project");
       }
